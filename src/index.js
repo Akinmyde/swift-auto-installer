@@ -32,6 +32,7 @@ const updateNodeModules = () => {
 }
 
 const runner = () => {
+    console.log(chalk.green("watching......"))
     if(!isPackageJSONExist()) {
         console.log(chalk.red("package.json file isn't present"))
         console.log(chalk.red("try running npm init -y to create one"))
@@ -46,4 +47,4 @@ const runner = () => {
     })
 }
 
-runner();
+runner()
