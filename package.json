@@ -1,24 +1,40 @@
 {
-  "name": "npm-auto-instaler",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "swift-auto-instaler",
+  "version": "0.0.10",
+  "description": "Auto watch and install dependencies when your teammate add changes to the package.json",
+  "keywords": [
+    "auto",
+    "install",
+    "watch",
+    "check",
+    "install"
+  ],
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "src"
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Akinmyde/npm-auto-instaler.git"
+    "url": "git+https://github.com/Akinmyde/swift-auto-installer.git"
   },
-  "keywords": [],
-  "author": "",
+  "bin": {
+    "swift-check": "./src/check-cli.js"
+  },
+  "author": "Akinmyde",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Akinmyde/npm-auto-instaler/issues"
+    "url": "https://github.com/Akinmyde/swift-auto-installer/issues"
   },
-  "homepage": "https://github.com/Akinmyde/npm-auto-instaler#readme",
+  "homepage": "https://github.com/Akinmyde/swift-auto-installer#readme",
   "dependencies": {
     "chalk": "^3.0.0",
-    "chokidar": "^3.3.1"
-  }
+    "chokidar": "^3.3.1",
+    "read-pkg-up": "^7.0.1",
+    "uuid": "^3.3.1"
+  },
+  "devDependencies": {}
 }
+

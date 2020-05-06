@@ -1,9 +1,27 @@
 const fs = require('fs');
-const chokidar = require('chokidar');
 const {execSync} = require('child_process');
-const chalk = require('chalk')
+const chalk = require('chalk');
+const readPkgUp = require('read-pkg-up');
 
-const isPackageJSONExist = () => fs.existsSync('package.json');
+let previouslyInstalledPackages;
+
+if(!fs.existsSync('package.json')) {
+    console.log(chalk.red("package.json file isn't present"))
+    console.log(chalk.red("try running npm init -y to create one"))
+    return;
+}
+
+const getInstalledPackages = async () => {
+    const packages = await readPkgUp();
+    return `{ "dependencies": ${JSON.stringify(packages.packageJson.dependencies)}, "devDependencies": ${JSON.stringify(packages.packageJson.devDependencies)}}`
+}
+
+const copyPackages = async () => {
+    let packages = await getInstalledPackages();
+    fs.writeFileSync('installed-packages.json', packages)
+    previouslyInstalledPackages = fs.readFileSync('installed-packages.json');
+}
+
 
 const getPackageManager = () => {
     let packageManager = 'npm';
@@ -11,7 +29,7 @@ const getPackageManager = () => {
         const file = fs.readFileSync('yarn.lock');
         if (file) {
             packageManager = 'yarn'
-            console.log('npm is detected as the default package manager')
+            console.log('yarn is detected as the default package manager')
         }
     } catch (ex) {
         console.log('npm is detected as the default package manager');
@@ -31,19 +49,23 @@ const updateNodeModules = () => {
     return isSuccessful;
 }
 
-const runner = () => {
-    if(!isPackageJSONExist()) {
-        console.log(chalk.red("package.json file isn't present"))
-        console.log(chalk.red("try running npm init -y to create one"))
-        return;
-    }
-
-    let watcher = chokidar.watch('package.json');
-    watcher.on('change', path => {
+const checkPackages = async (exit) => {
+    let packages = await getInstalledPackages();
+    previouslyInstalledPackages = JSON.stringify(JSON.parse(previouslyInstalledPackages));
+    packages = JSON.stringify(JSON.parse(packages))
+    if (previouslyInstalledPackages !== packages)
+    {
         const success = updateNodeModules();
-        if (success) console.log(chalk.green('node_modules updated'))
-        else console.log(chalk.red('an error occurred while updating node_modules'))
-    })
+        if (success) {
+            await copyPackages();
+            console.log(chalk.green('node_modules updated'))
+            return exit ? process.exit() : console.log(chalk.green("watching......"));
+        }
+        console.log(chalk.red('an error occurred while updating node_modules'))
+        return exit ? process.exit() : console.log(chalk.green("watching......"));
+    };
+    console.log(chalk.blueBright("no changes found"))
+    return exit ? process.exit() : console.log(chalk.green("watching......"));
 }
 
-runner();
+module.exports = { checkPackages, copyPackages }
