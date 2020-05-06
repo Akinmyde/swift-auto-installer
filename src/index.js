@@ -1,5 +1,4 @@
 const fs = require('fs');
-const chokidar = require('chokidar');
 const {execSync} = require('child_process');
 const chalk = require('chalk');
 const readPkgUp = require('read-pkg-up');
@@ -19,8 +18,8 @@ const getInstalledPackages = async () => {
 
 const copyPackages = async () => {
     let packages = await getInstalledPackages();
-    fs.writeFileSync('src/installed-packages.json', packages)
-    previouslyInstalledPackages = fs.readFileSync('src/installed-packages.json');
+    fs.writeFileSync('installed-packages.json', packages)
+    previouslyInstalledPackages = fs.readFileSync('installed-packages.json');
 }
 
 
@@ -50,29 +49,23 @@ const updateNodeModules = () => {
     return isSuccessful;
 }
 
-const start = async () => {
-    await copyPackages();
-    console.log(chalk.green("watching......"));
-
-    let watcher = chokidar.watch('package.json', { interval: 1000 });
-    watcher.on('change', async () => {
-        let packages = await getInstalledPackages();
-        previouslyInstalledPackages = JSON.stringify(JSON.parse(previouslyInstalledPackages));
-        packages = JSON.stringify(JSON.parse(packages))
-        if (previouslyInstalledPackages !== packages)
-        {
-            const success = updateNodeModules();
-            console.log(success);
-            if (success) {
-                 console.log(chalk.green('node_modules updated'))
-                 await copyPackages();
-                 return console.log(chalk.green("watching......"))
-            }
-            return console.log(chalk.red('an error occurred while updating node_modules'))
-        };
-        console.log(chalk.blueBright("no changes found"))
-        console.log(chalk.green("watching......"));
-    });
+const checkPackages = async (exit) => {
+    let packages = await getInstalledPackages();
+    previouslyInstalledPackages = JSON.stringify(JSON.parse(previouslyInstalledPackages));
+    packages = JSON.stringify(JSON.parse(packages))
+    if (previouslyInstalledPackages !== packages)
+    {
+        const success = updateNodeModules();
+        if (success) {
+            await copyPackages();
+            console.log(chalk.green('node_modules updated'))
+            return exit ? process.exit() : console.log(chalk.green("watching......"));
+        }
+        console.log(chalk.red('an error occurred while updating node_modules'))
+        return exit ? process.exit() : console.log(chalk.green("watching......"));
+    };
+    console.log(chalk.blueBright("no changes found"))
+    return exit ? process.exit() : console.log(chalk.green("watching......"));
 }
 
-start()
+module.exports = { checkPackages, copyPackages }
