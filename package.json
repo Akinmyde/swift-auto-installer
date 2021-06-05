@@ -1,7 +1,7 @@
 {
   "name": "swift-auto-instaler",
-  "version": "0.0.10",
-  "description": "Auto watch and install dependencies when your teammate add changes to the package.json",
+  "version": "1.0.2",
+  "description": "Auto watch install new packages added/required for your application to work. Say bye to running npm i everytime",
   "keywords": [
     "auto",
     "install",
@@ -37,4 +37,3 @@
   },
   "devDependencies": {}
 }
-

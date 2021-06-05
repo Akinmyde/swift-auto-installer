@@ -9,29 +9,25 @@ npm install swift-auto-instaler --save-dev
 ```
 
 ## Usage
+It can be used with node, react, angular e.t.c to check and automaitcally install new packages added/required for your application to work. Say bye to running npm i everytime.
 
 ### Hooking with your server
-
-It can be used with nodemon or node to check your packages before starting the server to do that add the following to your package.json
 ```js
-// package.json
-"start": "swift-check && node server.js"
+"start": "./node_modules/swift-auto-instaler/src/check-cli.js && node server.js" // change to your start script
 ```
 
 ### Hooking with test
 
 ```js
-// package.json
-"test": "swift-check && test server.js" // change this to your test script
+"test": "/node_modules/swift-auto-instaler/src/check-cli.js && test server.js" // change this to your test script
 ```
 
-### Using with husky
+### Using with husky 
 ```js
-// package.json
 {
   "husky": {
     "hooks": {
-      "hook": "swift-check",
+      "post-checkout": "/node_modules/swift-auto-instaler/src/check-cli.js",
       "...": "..."
     }
   }

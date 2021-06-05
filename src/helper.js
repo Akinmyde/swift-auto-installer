@@ -68,4 +68,5 @@ const checkPackages = async (exit) => {
     return exit ? process.exit() : console.log(chalk.green("watching......"));
 }
 
+// checkPackages()
 module.exports = { checkPackages, copyPackages }
