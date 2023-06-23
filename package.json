@@ -32,7 +32,7 @@
   "dependencies": {
     "chalk": "^3.0.0",
     "chokidar": "^3.3.1",
-    "read-pkg-up": "^7.0.1",
+    "read-pkg-up": "^9.1.0",
     "uuid": "^3.3.1"
   },
   "devDependencies": {}
